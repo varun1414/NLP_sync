@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, jsonify
 import atexit #!!COMMENTED FROM BHUSHAN'S CODE!!
 import time
 import os
-import time
+import time as time
 import tweepy
 from datetime import datetime
 from datetime import timedelta
@@ -298,8 +298,7 @@ auth.set_access_token(atoken, asecret)
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
 
-twitterStream = Stream(auth, listener=MyStreamListener(time_limit=10),lang='en',geocode="22.3511148,78.6677428,1km")
-twitterStream.filter(track=["ipl",'amitabh','bro','chelsea'])
+
 app = dash.Dash(__name__)
 
 
@@ -315,7 +314,7 @@ neu=0
 
 pos = 0
 neg = 0
-time = 0
+times = 0
 vectorizer = pickle.load(open("vector.pickel", "rb"))
 w = pickle.load(open('train', 'rb'))
 x_train=w['x_train']
@@ -546,8 +545,8 @@ app.layout =  html.Div([
     dcc.Tabs(id="tabs", value='tab-1', children=[
     dcc.Tab(label='Live Tweets', value='tab-1',children=[dcc.Interval(
         id='interval-component-slow',
-        interval=1 * 1000,
-        n_intervals=0  # in milliseconds
+        interval=1 * 10000,
+        n_intervals=10000  # in milliseconds
         )]),
         dcc.Tab(label='Lockdown 1.0', value='tab-2'),
         dcc.Tab(label='Lockdown 2.0', value='tab-3'),
@@ -1371,8 +1370,12 @@ def render_content(tab,sel_option,n):
     global positive
     global negative
     global neutral
+    global auth
     # content='hi'
     # print(cal)
+    twitterStream = Stream(auth, listener=MyStreamListener(time_limit=1), lang='en',
+                           geocode="22.3511148,78.6677428,1km")
+    twitterStream.filter(track=["ipl", 'amitabh', 'bro', 'chelsea'],is_async=True)
     try:
         df=pd.read_json('count.json')
 
@@ -1385,7 +1388,7 @@ def render_content(tab,sel_option,n):
     global pos
     global neg
     global neu
-    global time
+    global times
     global tf2
     positive=df['pos'][0]
     f ='%H:%M:%S'
@@ -1395,7 +1398,7 @@ def render_content(tab,sel_option,n):
     cal.loc[cal['val']=='positive','count']=positive
     cal.loc[cal['val']=='negative','count']=negative
     cal.loc[cal['val']=='neutral','count']=neutral
-    time=df["time"][0]
+    times=df["time"][0]
     tp=df['details'][0]
     temp={'pos':positive,'neg':negative,'neu':neutral,'time':df['time'][0],'text':[tp]}
     # print(temp)
