@@ -107,7 +107,7 @@ neghash=[]
 neuhash=[]
 
 class MyStreamListener(StreamListener):
-  def __init__(self, time_limit=5):
+  def __init__(self, time_limit=10):
         self.start_time = time.time()
         self.limit = time_limit
 
@@ -176,12 +176,12 @@ class MyStreamListener(StreamListener):
 
         tweets = " ".join(t)
         #     tweets = tweets.split()
-        tweets = tweets.replace('ing', '')
-        tweets = tweets.replace('pic', '')
-        tweets = tweets.replace('com', '')
+        # tweets = tweets.replace('ing', '')
+        # tweets = tweets.replace('pic', '')
+        # tweets = tweets.replace('com', '')
 
         # l = vectorizer.transform(tweets).toarray()
-        # tweets='fuck corona'
+
         k = pd.Series(tweets)
         print(k)
 
@@ -1373,18 +1373,17 @@ def render_content(tab,sel_option,n):
     global auth
     # content='hi'
     # print(cal)
-    twitterStream = Stream(auth, listener=MyStreamListener(time_limit=1), lang='en',
+    twitterStream = Stream(auth, listener=MyStreamListener(time_limit=5), lang='en',
                            geocode="22.3511148,78.6677428,1km")
-    twitterStream.filter(track=["ipl", 'amitabh', 'bro', 'chelsea'],is_async=True)
-    try:
-        df=pd.read_json('count.json')
+    twitterStream.filter(track=["trump"],is_async=True)
+
+    df=pd.read_json('count.json')
 
         # f = open("abcd.json", "r")
     #         # print(f.read())
         # print(df['details'][0])
         # print(df['dt'])
-    except:
-        print("cant")
+
     global pos
     global neg
     global neu
